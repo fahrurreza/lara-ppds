@@ -1,0 +1,14 @@
+# Mengabaikan file teks.txt
+teks.txt
+
+# Mengabaikan semua file dengan ekstensi .log
+*.log
+
+# Mengabaikan folder vendor
+/vendor/
+
+# Mengabaikan file atau folder dengan nama cache di dalam folder public
+/public/cache/
+
+# Mengabaikan semua file dengan ekstensi .pdf di dalam folder dokumen
+/dokumen/*.pdf
