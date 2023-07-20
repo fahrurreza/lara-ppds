@@ -92,7 +92,7 @@
           </li>
 
           <li class="side-nav-item">
-              <a href="index.php?view=dashboard" class="side-nav-link">
+              <a href="{{route('penilaian-supervisor')}}" class="side-nav-link">
                   <i class="uil-table"></i>
                   <span> Penilaian Supervisor </span>
               </a>
@@ -110,13 +110,13 @@
           </li>
 
           <li class="side-nav-item">
-          <a href="?view=stp_pp" class="side-nav-link">
+          <a href="{{route('profile-ppds')}}" class="side-nav-link">
                   <i class="uil-clipboard-alt"></i>
                   <span> Profile PPDS </span>
               </a>
           </li>
           <li class="side-nav-item">
-              <a href="?view=stp_sp" class="side-nav-link">
+              <a href="{{route('profile-supervisor')}}" class="side-nav-link">
                   <i class="uil-window"></i>
                   <span> Supervisor </span>
               </a>
@@ -140,7 +140,7 @@
 
 
           <li class="side-nav-item">
-              <a href="{{route('nilai-ppds')}}" class="side-nav-link">
+              <a href="" class="side-nav-link">
                   <i class="uil-clipboard-alt"></i>
                   <span> Daftar Nilai PPDS </span>
               </a>

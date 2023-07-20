@@ -14,19 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 //BPJS
-Route::post('/get-antrean-harian-bpjs', 'API\ApiBpjsController@antrean_harian');
-
-//MENU
-Route::post('/get-menu', 'API\ApiMenuController@index');
-Route::post('/create-menu', 'API\ApiMenuController@store');
-Route::post('/show-menu', 'API\ApiMenuController@show');
-Route::post('/update-menu', 'API\ApiMenuController@update');
-Route::post('/delete-menu', 'API\ApiMenuController@delete');
+Route::post('/upload_path', 'API\ApiPortofolioController@path');
 
 
 

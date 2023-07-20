@@ -35,13 +35,18 @@ Route::middleware('auth')->group(function() {
     //PAGE Transaction
     Route::get('trx-tindakan', 'PortofolioController@tindakan')->name('trx-tindakan');
     Route::post('post-tindakan', 'PortofolioController@post_tindakan')->name('post-tindakan');
+    Route::post('approve-portofolio', 'PortofolioController@approve_portofolio')->name('approve-portofolio');
 
     Route::get('trx-case-report', 'PortofolioController@case_report')->name('trx-case-report');
     Route::get('trx-karya-ilmiah', 'PortofolioController@karya_ilmiah')->name('trx-karya-ilmiah');
     Route::get('trx-extrakulikuler', 'PortofolioController@extrakulikuler')->name('trx-extrakulikuler');
     
-    Route::get('nilai-ppds', 'ScoreController@index')->name('nilai-ppds');
+    Route::get('penilaian-supervisor', 'ScoreController@index')->name('penilaian-supervisor');
     Route::get('nilai-ppds-portofolio/{id}', 'ScoreController@ppds_portofolio')->name('nilai-ppds-portofolio');
+
+    Route::get('profile-ppds', 'UserController@profile_ppds')->name('profile-ppds');
+    Route::get('profile-supervisor', 'UserController@profile_supervisor')->name('profile-supervisor');
+    Route::post('user-post', 'UserController@store')->name('user-post');
 
     //LOGOUT
     Route::post('/logout', 'AuthController@logout')->name('logout');

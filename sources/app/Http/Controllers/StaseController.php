@@ -32,7 +32,7 @@ class StaseController extends Controller
                                 'semester'          => 1,
                                 'status'            => 1,
                                 'update_date'       => now(),
-                                'update_id'         => null
+                                'update_id'         => Auth::user()->id
                             ]);
         if($insert_stase){
             Toastr::success('Stase telah ditambahkan');

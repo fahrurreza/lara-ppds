@@ -40,4 +40,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function update_name()
+    {
+        return $this->hasOne('App\Models\User', 'id', 'id');
+    }
 }

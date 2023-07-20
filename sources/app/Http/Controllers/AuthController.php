@@ -24,7 +24,10 @@ class AuthController extends Controller
             'password'  => ['required']
         ]);
 
-        $user = UserModel::where('email', $request->email)->where('status', 1)->first();
+        $user = UserModel::where('email', $request->email)
+                        ->where('status', 2)
+                        ->orwhere('status', 4)
+                        ->first();
 
         if($user)
         {
@@ -74,7 +77,10 @@ class AuthController extends Controller
 
     public function update_password(Request $request)
     {
-        $user = UserModel::where('id', Auth::user()->id)->first();
+        $user = UserModel::where('id', Auth::user()->id)
+                        ->where('user_level', 1)
+                        ->where('status', 1)
+                        ->first();
 
         if($user)
         {
@@ -91,7 +97,7 @@ class AuthController extends Controller
             }
             else
             {
-                Toastr::error('Password tidak sesuai!');
+                Toastr::error('Password salah atau akun anda bukan admin / belum aktif!');
                 return \Redirect::back();
             }
         }

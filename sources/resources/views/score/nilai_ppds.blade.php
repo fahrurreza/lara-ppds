@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box">
-                        <h4 class="page-title">Data Stase</h4>
+                        <h4 class="page-title">{{$data['page']}}</h4>
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                                                 <!-- menampilkan data dengan menggunakan array  -->
                                                 <td>{{$loop->iteration}}</td>
                                                 <td>
-                                                    <a href="{{route('nilai-ppds-portofolio', ['id' => cript($list->ppds_id) ])}}" class="btn btn-outline-primary btn-sm">{{$list->ppds->user_name}}</a>    
+                                                    <a href="{{route('nilai-ppds-portofolio', ['id' => cript($list->ppds_id) ])}}" class="btn btn-outline-success btn-sm">{{$list->ppds->user_name}}</a>    
                                                 </td>
                                                 <td>1</td>
                                                 <td>0</td>

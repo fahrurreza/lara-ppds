@@ -13,7 +13,8 @@ class ScoreController extends Controller
     public function index()
     {
         $data   = [
-            'ppds'     => PortofolioModel::groupByPpdsId(Auth::user()->id)->with(['ppds'])->get()
+            'ppds'      => PortofolioModel::groupByPpdsId(Auth::user()->id)->with(['ppds'])->get(),
+            'page'      => 'Data Nilai PPDS'
         ];
 
         return view('score.nilai_ppds', compact('data'));
@@ -25,7 +26,7 @@ class ScoreController extends Controller
         $ppds_id        = Crypt::decryptString($id);
 
         $data   = [
-            'stase'     => PortofolioModel::groupByStaseId($supervisor_id, $ppds_id)->with(['stase'])->get()
+            'stase'     => PortofolioModel::groupByStaseId($ppds_id)->with(['stase'])->get()
         ];
 
         return view('score.stase_ppds', compact('data'));

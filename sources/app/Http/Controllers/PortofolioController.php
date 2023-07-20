@@ -23,7 +23,7 @@ class PortofolioController extends Controller
             'stase'         => StaseModel::all(),
             'trx_id'        =>  trx_id(),
             'page'          => 'Portofolio Pelayanan/Tindakan',
-            'portofolio'    => PortofolioModel::with(['path', 'ppds', 'supervisor'])->where('portofolio_id', 1)->get()
+            'portofolio'    => PortofolioModel::with(['path', 'ppds', 'supervisor', 'tindakan'])->where('portofolio_id', 1)->get()
         ];
         return view('portofolio.tindakan', compact('data'));
     }
@@ -64,4 +64,17 @@ class PortofolioController extends Controller
         return view('portofolio.extrakulikuler', compact('data'));
     }
 
+    public function approve_portofolio(Request $request)
+    {
+        $update = PortofolioModel::where('trx_id', $request->trx_id)->update(['status' => 4]);
+
+        if($update)
+        {
+            return 'oke';
+        }
+        else
+        {
+            return 'false';
+        }
+    }
 }
