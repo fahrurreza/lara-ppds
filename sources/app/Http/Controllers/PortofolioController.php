@@ -70,11 +70,11 @@ class PortofolioController extends Controller
 
         if($update)
         {
-            return 'oke';
+            return true;
         }
         else
         {
-            return 'false';
+            return false;
         }
     }
 }

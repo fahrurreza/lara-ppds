@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+
+@push('custom-style')
+<link rel="stylesheet" href="assets/sweetalert/xsweetalert.css">
+@endpush
+
 <div class="content-page">
     <div class="content">
         <!-- Start Content-->
@@ -242,6 +247,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
 </script>
+<script src="{{asset('assets/sweetalert/xsweetalert.js')}}"></script>
 <script>
 $('#modaledit').on('show.bs.modal', function(event) {
     // event.relatedtarget menampilkan elemen mana yang digunakan saat diklik.
@@ -309,7 +315,26 @@ approve.addEventListener("click", function() {
         url : '{{URL::to('approve-portofolio')}}',
         data:{'trx_id':trx_id},
         success:function(response){
-            console.log(response)
+            if(response == true){
+                Swal.fire({
+                icon: 'success',
+                title: 'Portofolio has been approved',
+                showConfirmButton: false,
+                timer: 1500
+                })
+                window.location.reload()
+            }else{
+                Swal.fire({
+                icon: 'error',
+                title: 'Portofolio failed approved',
+                showConfirmButton: false,
+                timer: 1500
+                })
+                setTimeout(reload, 2000)
+                function reload(){
+                    window.location.reload()
+                }
+            }
         }
     });
 
