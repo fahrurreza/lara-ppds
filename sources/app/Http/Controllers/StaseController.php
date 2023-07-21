@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use Toastr;
+use Auth;
 
 class StaseController extends Controller
 {
@@ -28,8 +29,9 @@ class StaseController extends Controller
         $insert_stase    =   DB::table('stp_stase')->insert([    
                                 'stase_id'          => stase_id(),
                                 'stase_name'        => $request->stase_name,
-                                'score'             => $request->stase_score,
-                                'semester'          => 1,
+                                'score_akademi'     => $request->score_akademi,
+                                'score_atitude'     => $request->score_atitude,
+                                'semester'          => $request->semester,
                                 'status'            => 1,
                                 'update_date'       => now(),
                                 'update_id'         => Auth::user()->id

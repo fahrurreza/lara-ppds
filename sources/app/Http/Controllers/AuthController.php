@@ -25,8 +25,8 @@ class AuthController extends Controller
         ]);
 
         $user = UserModel::where('email', $request->email)
-                        ->where('status', 2)
-                        ->orwhere('status', 4)
+                        ->where('user_level', 2)
+                        ->orwhere('user_level', 4)
                         ->first();
 
         if($user)

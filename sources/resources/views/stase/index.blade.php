@@ -50,7 +50,12 @@
                                                         data-stase_id="{{$list->stase_id}}"
                                                         data-stase_name="{{$list->stase_name}}"
                                                         data-status="{{$list->status}}"
-                                                        data-update_date="">{{$list->stase_id}}</a>    
+                                                        data-score-akademi="{{$list->score_akademi}}"
+                                                        data-score-atitude="{{$list->score_atitude}}"
+                                                        data-semester="{{$list->semester}}">
+                                                    
+                                                        {{$list->stase_id}}
+                                                </a>    
                                                 </td>
                                                 <td>{{$list->stase_name}}</td>
                                                 <td>{{$list->score}}</td>
@@ -95,9 +100,26 @@
                                         data-provide="typeahead" id="the-basics" placeholder="Stase Name" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Stase Score</label>
-                                    <input type="text" class="form-control" name="stase_score"
+                                    <label class="form-label">Standart Score Akademi</label>
+                                    <input type="number" class="form-control" name="score_akademi"
                                         data-provide="typeahead" id="the-basics" placeholder="Stase Score" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Standart Score Atitude</label>
+                                    <input type="number" class="form-control" name="score_atitude"
+                                        data-provide="typeahead" id="the-basics" placeholder="Stase Score" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Semester</label>
+                                    <select class="form-control custom-select" id="semester" name="semester" required>
+                                        <option value="">Pilih Semester...</option>
+                                        <option value="I">SEMESTER I</option>
+                                        <option value="II">SEMESTER II</option>
+                                        <option value="III">SEMESTER III</option>
+                                        <option value="IV">SEMESTER IV</option>
+                                        <option value="V">SEMESTER V</option>
+                                        <option value="VI">SEMESTER VI</option>
+                                    </select>
                                 </div>
                             </div> <!-- end col -->
                         </div>
@@ -125,24 +147,41 @@
                 <form method="POST" action="" enctype='multipart/form-data' novalidate>
                 <input type="hidden" class="form-control" name="stase_id" id="stase_id_data" >
                     <div class="form-group">
-                        <label for="exampleFormControlInput1">stase ID</label>
+                        <label for="stase_id">stase ID</label>
                         <input type="text" class="form-control" name="stase_id" id="stase_id" disabled>
                     </div>
                     <br>
                     <div class="form-group">
-                        <label for="exampleFormControlInput1">stase Name</label>
+                        <label for="stase_name">stase Name</label>
                         <input type="text" class="form-control" name="stase_name" id="stase_name" required>
                     </div>
+                    <br>
                     <div class="form-group">
-                        <label for="exampleFormControlInput1">Status</label>
+                        <label for="score_akademi">Score Akademi</label>
+                        <input type="number" class="form-control" name="score_akademi" id="score_akademi">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="score_atitude">Score Atitude</label>
+                        <input type="number" class="form-control" name="score_atitude" id="score_atitude">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="semester">Semester</label>
+                        <input type="text" class="form-control" name="semester" id="semester">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                    <label for="status">Status</label>
                         <input type="text" class="form-control" name="status" id="status">
                     </div>
+                    
             </div>
             <div class="modal-footer">
-                <button type="submit" name="undelete" id="undeleteBtn" class="btn btn-danger">Undelete</button>
-                <button type="submit" name="delete"  id="deleteBtn" class="btn btn-danger">Delete</button>
-                <button type="submit" name="save" id="saveBtn" class="btn btn-success">Save</button>
-                <button type="button" class="btn btn-success" data-dismiss="modal" aria-label="Close">Close</button>
+                <button type="button" name="undelete" id="undeleteBtn" class="btn btn-primary">Undelete</button>
+                <button type="button" name="delete"  id="deleteBtn" class="btn btn-danger">Delete</button>
+                <button type="button" name="save" id="saveBtn" class="btn btn-success">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Close</button>
             </div>
         </div>
         </form>
@@ -164,7 +203,10 @@ $('#modaledit').on('show.bs.modal', function(event) {
     var stase_id_data = button.data('stase_id')
     var stase_id = button.data('stase_id')
     var stase_name = button.data('stase_name')
-    var status = button.data('status')
+    var score_akademi = button.data('score-akademi')
+    var score_atitude = button.data('score-atitude')
+    var semester = button.data('semester')
+    var status = 'aktif'
     var update_date = button.data('update_date')
     var modal = $(this)
 
@@ -172,15 +214,17 @@ $('#modaledit').on('show.bs.modal', function(event) {
     modal.find('#stase_id_data').val(stase_id_data)
     modal.find('#stase_id').val(stase_id)
     modal.find('#stase_name').val(stase_name)
+    modal.find('#score_akademi').val(score_akademi)
+    modal.find('#score_atitude').val(score_atitude)
+    modal.find('#semester').val(semester)
     modal.find('#status').val(status)
-    modal.find('#update_date').val(update_date)
 
      // Mengatur visibilitas tombol "Undelete" berdasarkan status
-     if (status === 'Active') {
+     if (status === 1) {
         $('#undeleteBtn').hide(); // Menyembunyikan tombol "Undelete"
         $('#saveBtn').show(); // Menyembunyikan tombol "Undelete"
         $('#deleteBtn').show(); // Menyembunyikan tombol "Undelete"
-    } else if (status === 'Delete') {
+    } else if (status === 0) {
         $('#undeleteBtn').show(); // Menampilkan tombol "Undelete"
         $('#deleteBtn').hide(); // Menyembunyikan tombol "Undelete"
         $('#saveBtn').hide(); // Menyembunyikan tombol "Undelete"
