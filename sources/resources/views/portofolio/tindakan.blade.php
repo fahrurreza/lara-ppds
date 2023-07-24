@@ -57,9 +57,16 @@
                                                         data-stase_name="{{$list->stase->stase_name}}"
                                                         data-user_name="{{$list->ppds->user_name}}"
                                                         data-description="{{$list->tindakan->description}}"
-                                                        data-path="https://mobile.ppdslogbook.com/assets/img/posting/{{$list->path->path}}"
+                                                        data-path="http://localhost/lara-mobile-ppds/assets/img/posting/{{$list->path->path}}"
                                                         data-status="{{$list->status}}"
+                                                        @if($list->revision !== null)
+                                                        data-revision="{{$list->revision->note}}"
+                                                        @else
+                                                        data-revision=""
+                                                        @endif
                                                         >
+
+                                                        <!-- https://mobile.ppdslogbook.com/assets/img/posting/{{$list->path->path}} -->
                                                         {{$list->trx_id}}
                                                     </a>
                                                 </td>
@@ -102,10 +109,10 @@
     aria-hidden="true">
     <div class="modal-dialog modal-md">
         <form class="needs-validation" method="POST" action="{{route('post-tindakan')}}" enctype="multipart/form-data">
-        @csrf
+            @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="standard-modalLabel">Form Data Hospital</h4>
+                    <h4 class="modal-title" id="standard-modalLabel">Form Portofolio</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                 </div>
                 <div class="modal-body">
@@ -113,8 +120,13 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="mb-3">
-                                    <label class="form-label" for="trx_id">Trx No</label>
-                                    <input type="text" class="form-control" id="trx_id" value="{{$data['trx_id']}}" disabled>
+                                    <label class="form-label" for="ppds">PPDS</label>
+                                    <select class="form-control custom-select" id="ppds" name="ppds_id" required>
+                                        <option value="">Pilih PPDS</option>
+                                        @foreach($data['ppds'] as $option)
+                                        <option value="{{$option->id}}">{{$option->user_name}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-lg-12">
@@ -131,7 +143,7 @@
                             <div class="col-lg-12">
                                 <div class="mb-3">
                                     <label class="form-label" for="supervisor">Supervisor</label>
-                                    <select class="form-control custom-select" id="supervisor" name="supervisor_id">
+                                    <select class="form-control custom-select" id="supervisor" name="supervisor_id" required>
                                         <option>Pilih Supervisor </option>
                                         @foreach($data['supervisor'] as $option)
                                         <option value="{{$option->id}}">{{$option->user_name}}</option>
@@ -142,7 +154,7 @@
                             <div class="col-lg-12">
                                 <div class="mb-3">
                                     <label class="form-label" for="kegiatan">Kegiatan</label>
-                                    <select class="form-control custom-select" id="kegiatan" name="stase_id">
+                                    <select class="form-control custom-select" id="kegiatan" name="stase_id" required>
                                         <option value="0">Pilih Kegiatan</option>
                                         @foreach($data['stase'] as $option)
                                         <option value="{{$option->stase_id}}">{{$option->stase_name}}</option>
@@ -153,7 +165,7 @@
                             <div class="col-lg-12">
                                 <div class="mb-3">
                                     <label class="form-label" for="description">Deskripsi Kegiatan</label>
-                                    <textarea id="description" rows="2" class="form-control" name="description" required name="deskripsi"></textarea>
+                                    <textarea id="description" rows="2" class="form-control" name="description" required></textarea>
                                     <i class="clear-input">
                                         <ion-icon name="close-circle"></ion-icon>
                                     </i>
@@ -225,11 +237,11 @@
                             <textarea class="form-control"  rows="5" id="description" name="description " disabled></textarea>
                         </div>
                         <div class="mb-3 col-md-6">
-                        <img id="path" width="200" height="160">
+                            <img id="path" width="200" height="160">
                         </div>
                     </div>
                     *Note Revision
-                    <textarea class="form-control"  rows="4"  name="revisi_description " ></textarea>
+                    <textarea class="form-control"  rows="4"  name="revisi_description" id="revisi_description" ></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" id="revision" class="btn btn-warning">Revision</button>
@@ -264,10 +276,9 @@ $('#modaledit').on('show.bs.modal', function(event) {
     var status = button.data('status')
     var description = button.data('description')
     var path = button.data('path');
+    var revision = button.data('revision');
     var imgElement = document.getElementById("path");
     var modal = $(this)
-
-    console.log(status);
 
     //variabel di atas dimasukkan ke dalam element yang sesuai dengan idnya masing-masing
     modal.find('#trx_id_data').val(trx_id_data)
@@ -279,6 +290,7 @@ $('#modaledit').on('show.bs.modal', function(event) {
     modal.find('#user_name').val(user_name)
     modal.find('#supervisor_name').val(supervisor_name)
     modal.find('#description').val(description)
+    modal.find('#revisi_description').val(revision)
     imgElement.src = path;
     
     
@@ -288,7 +300,8 @@ $('#modaledit').on('show.bs.modal', function(event) {
     if (status === 1) {
         $('#revision').show(); // Menyembunyikan tombol "Undelete"
         $('#approve').show(); // Menyembunyikan tombol "Undelete"
-    } else {
+    }
+    else {
         $('#revision').hide(); // Menyembunyikan tombol "Undelete"
         $('#approve').hide(); // Menyembunyikan tombol "Undelete"
     }
@@ -305,40 +318,102 @@ function hideDiv() {
 // Panggil fungsi hideDiv() saat halaman pertama kali dimuat
 window.onload = hideDiv;
 
-var approve = document.getElementById("approve");
-approve.addEventListener("click", function() {
-    var trx_id = document.getElementById("trx_id_data").value
+</script>
 
-    $.ajax({
-        type : 'post',
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url : '{{URL::to('approve-portofolio')}}',
-        data:{'trx_id':trx_id},
-        success:function(response){
-            if(response == true){
-                Swal.fire({
-                icon: 'success',
-                title: 'Portofolio has been approved',
-                showConfirmButton: false,
-                timer: 1500
-                })
-                window.location.reload()
-            }else{
-                Swal.fire({
-                icon: 'error',
-                title: 'Portofolio failed approved',
-                showConfirmButton: false,
-                timer: 1500
-                })
-                setTimeout(reload, 2000)
-                function reload(){
-                    window.location.reload()
-                }
+<script>
+    var approve = document.getElementById("approve");
+    approve.addEventListener("click", function() {
+
+        Swal.fire({
+            title: 'Kamu sudah yakin?',
+            text: "Pastikan data ini sudah benar ya",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, saya yakin!'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                var trx_id = document.getElementById("trx_id_data").value
+
+                $.ajax({
+                    type : 'post',
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    url : '{{URL::to('approve-portofolio')}}',
+                    data:{'trx_id':trx_id},
+                    success:function(response){
+                        if(response == true){
+                            Swal.fire({
+                            icon: 'success',
+                            title: 'Portofolio has been approved',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                            window.location.reload()
+                        }else{
+                            Swal.fire({
+                            icon: 'error',
+                            title: 'Portofolio failed approved',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                            setTimeout(reload, 2000)
+                            function reload(){
+                                window.location.reload()
+                            }
+                        }
+                    }
+                });
             }
-        }
+        })
     });
 
-});
+    var revision = document.getElementById("revision");
+    revision.addEventListener("click", function() {
+          
+        var note = document.getElementById("revisi_description").value;
+
+        if(note == ''){
+            Swal.fire({
+                icon: 'error',
+                title: 'Note Revision Is Required',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }else{
+            var trx_id = document.getElementById("trx_id_data").value
+
+            $.ajax({
+                type : 'post',
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url : '{{URL::to('revision-portofolio')}}',
+                data:{'trx_id':trx_id, 'note':note},
+                success:function(response){
+                    if(response == true){
+                        Swal.fire({
+                        icon: 'success',
+                        title: 'Portofolio has been revisiond',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                        window.location.reload()
+                    }else{
+                        Swal.fire({
+                        icon: 'error',
+                        title: 'Portofolio failed revisiond',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                        setTimeout(reload, 2000)
+                        function reload(){
+                            window.location.reload()
+                        }
+                    }
+                }
+            });
+        }
+            
+    });
 </script>
 
 @endsection

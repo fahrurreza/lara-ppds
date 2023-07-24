@@ -31,7 +31,7 @@
         $id=str_pad($maxId+1, 6, 0, STR_PAD_LEFT);
         $year=date("Y");
         $month=date("m");
-        $trx_id='TD'.'-'.date("m").'-'.date("Y").'-'.$id;
+        $trx_id='TD'.'.'.date("m").'.'.date("y").'.'.$id;
 
         return $trx_id;
     }

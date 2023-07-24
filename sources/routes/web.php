@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function() {
     Route::get('trx-tindakan', 'PortofolioController@tindakan')->name('trx-tindakan');
     Route::post('post-tindakan', 'PortofolioController@post_tindakan')->name('post-tindakan');
     Route::post('approve-portofolio', 'PortofolioController@approve_portofolio')->name('approve-portofolio');
+    Route::post('revision-portofolio', 'PortofolioController@revision_portofolio')->name('revision-portofolio');
 
     Route::get('trx-case-report', 'PortofolioController@case_report')->name('trx-case-report');
     Route::get('trx-karya-ilmiah', 'PortofolioController@karya_ilmiah')->name('trx-karya-ilmiah');

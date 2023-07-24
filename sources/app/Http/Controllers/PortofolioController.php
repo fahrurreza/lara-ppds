@@ -12,6 +12,10 @@ use App\Models\User as UserModel;
 use App\Models\Hospital as HospitalModel;
 use App\Models\Stase as StaseModel;
 use Illuminate\Http\Request;
+use Str;
+use DB;
+use Auth;
+use Toastr;
 
 class PortofolioController extends Controller
 {
@@ -19,12 +23,15 @@ class PortofolioController extends Controller
     {
         $data = [
             'supervisor'    => UserModel::where('user_level', 3)->get(),
+            'ppds'          => UserModel::where('user_level', 1)->get(),
             'hospital'      => HospitalModel::all(),
             'stase'         => StaseModel::all(),
             'trx_id'        =>  trx_id(),
             'page'          => 'Portofolio Pelayanan/Tindakan',
-            'portofolio'    => PortofolioModel::with(['path', 'ppds', 'supervisor', 'tindakan'])->where('portofolio_id', 1)->get()
+            'portofolio'    => PortofolioModel::with(['path', 'ppds', 'supervisor', 'tindakan', 'revision'])->where('portofolio_id', 1)->orderBy('create_date', 'desc')->get()
         ];
+
+
         return view('portofolio.tindakan', compact('data'));
     }
 
@@ -76,5 +83,79 @@ class PortofolioController extends Controller
         {
             return false;
         }
+    }
+
+    public function revision_portofolio(Request $request)
+    {
+        
+        DB::beginTransaction();
+        try {
+            PortofolioModel::where('trx_id', $request->trx_id)->update(['status' => 2]);
+
+            DB::table('portofolio_revision')->insert([
+                'trx_id'    => $request->trx_id,
+                'note'      => $request->note
+            ]);
+
+            DB::commit();
+            return true;
+        } catch (Exception $e) {
+            DB::rollback();
+            return false;
+        }
+    }
+
+    public function post_tindakan(Request $request)
+    {
+
+        DB::beginTransaction();
+
+        try {
+                $trx_id = trx_id();
+
+                $insert_portofolio  =   DB::table('trx_portofolio')->insert([
+                                        'portofolio_id'     => 1,
+                                        'trx_id'            => $trx_id,
+                                        'stase_id'          => $request->stase_id,
+                                        'supervisor_id'     => $request->supervisor_id,
+                                        'ppds_id'           => $request->ppds_id,
+                                        'status'            => 1,
+                                        'create_date'       => now(),
+                                        'create_id'         => Auth::user()->id
+                                        ]);
+
+                
+                $insert_tindakan    =   DB::table('trx_tindakan')->insert([
+                                        'trx_id'            => $trx_id,
+                                        'stase_id'          => $request->stase_id,
+                                        'hospital_id'       => $request->hospital_id,
+                                        'description'       => $request->description
+                                        ]);
+
+                // PROSES FILE UPLOAD
+
+                $random = Str::random(8);
+                $file = $request->file('photo');
+                $filename = $random.'.'.$file->getClientOriginalExtension();
+                
+                $tujuan_upload = '../lara-mobile-ppds/assets/img/posting';
+                $file->move($tujuan_upload, $filename);
+
+                $insert_path        =   DB::table('path_portofolio')->insert([
+                                        'trx_id'            => $trx_id,
+                                        'path'              => $filename
+                                        ]);
+
+                DB::commit();
+
+                Toastr::success('Portofolio berhasil disimpan di nomor '. $trx_id);
+                return Redirect('trx-tindakan');
+        
+        } catch (Exception $e) {
+            DB::rollback();
+            Toastr::error('Portofolio di posting, silahkan coba lagi');
+            return \Redirect::back();
+        }
+        
     }
 }

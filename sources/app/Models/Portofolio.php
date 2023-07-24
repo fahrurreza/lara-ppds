@@ -25,6 +25,10 @@ class Portofolio extends Model
         return $this->hasOne('App\Models\Tindakan', 'trx_id', 'trx_id');
     }
 
+    public function revision() {
+        return $this->hasOne('App\Models\Revision', 'trx_id', 'trx_id')->latest('id');
+    }
+
     public function path() {
         return $this->belongsTo('App\Models\Pathportofolio', 'trx_id', 'trx_id');
     }
