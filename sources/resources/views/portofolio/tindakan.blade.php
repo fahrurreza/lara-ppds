@@ -256,67 +256,70 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
 </script>
+
 <script src="{{asset('assets/sweetalert/xsweetalert.js')}}"></script>
+
 <script>
-$('#modaledit').on('show.bs.modal', function(event) {
-    // event.relatedtarget menampilkan elemen mana yang digunakan saat diklik.
-    var button = $(event.relatedTarget)
-    // data-data yang disimpan pada tombol edit dimasukkan ke dalam variabelnya masing-masing 
-    var trx_id_data = button.data('trx_id')
-    var trx_id = button.data('trx_id')
-    var status = button.data('status')
-    var update_date = button.data('update_date')
-    var supervisor_name = button.data('supervisor_name')
-    var PPDS_name = button.data('PPDS_name')
-    var stase_name = button.data('stase_name')
-    var user_name = button.data('user_name')
-    var status = button.data('status')
-    var description = button.data('description')
-    var path = button.data('path');
-    var revision = button.data('revision');
-    var imgElement = document.getElementById("path");
-    var modal = $(this)
+    $('#modaledit').on('show.bs.modal', function(event) {
+        // event.relatedtarget menampilkan elemen mana yang digunakan saat diklik.
+        var button = $(event.relatedTarget)
+        // data-data yang disimpan pada tombol edit dimasukkan ke dalam variabelnya masing-masing 
+        var trx_id_data = button.data('trx_id')
+        var trx_id = button.data('trx_id')
+        var status = button.data('status')
+        var update_date = button.data('update_date')
+        var supervisor_name = button.data('supervisor_name')
+        var PPDS_name = button.data('PPDS_name')
+        var stase_name = button.data('stase_name')
+        var user_name = button.data('user_name')
+        var status = button.data('status')
+        var description = button.data('description')
+        var path = button.data('path');
+        var revision = button.data('revision');
+        var imgElement = document.getElementById("path");
+        var modal = $(this)
 
-    //variabel di atas dimasukkan ke dalam element yang sesuai dengan idnya masing-masing
-    modal.find('#trx_id_data').val(trx_id_data)
-    modal.find('#trx_id').val(trx_id)
-    modal.find('#status').val(status)
-    modal.find('#update_date').val(update_date)
-    modal.find('#PPDS_name').val(PPDS_name)
-    modal.find('#stase_name').val(stase_name)
-    modal.find('#user_name').val(user_name)
-    modal.find('#supervisor_name').val(supervisor_name)
-    modal.find('#description').val(description)
-    modal.find('#revisi_description').val(revision)
-    imgElement.src = path;
-    
-    
-    
+        //variabel di atas dimasukkan ke dalam element yang sesuai dengan idnya masing-masing
+        modal.find('#trx_id_data').val(trx_id_data)
+        modal.find('#trx_id').val(trx_id)
+        modal.find('#status').val(status)
+        modal.find('#update_date').val(update_date)
+        modal.find('#PPDS_name').val(PPDS_name)
+        modal.find('#stase_name').val(stase_name)
+        modal.find('#user_name').val(user_name)
+        modal.find('#supervisor_name').val(supervisor_name)
+        modal.find('#description').val(description)
+        modal.find('#revisi_description').val(revision)
+        imgElement.src = path;
+        
+        
+        
 
-    // Mengatur visibilitas tombol "Undelete" berdasarkan status
-    if (status === 1) {
-        $('#revision').show(); // Menyembunyikan tombol "Undelete"
-        $('#approve').show(); // Menyembunyikan tombol "Undelete"
+        // Mengatur visibilitas tombol "Undelete" berdasarkan status
+        if (status === 1) {
+            $('#revision').show(); // Menyembunyikan tombol "Undelete"
+            $('#approve').show(); // Menyembunyikan tombol "Undelete"
+        }
+        else {
+            $('#revision').hide(); // Menyembunyikan tombol "Undelete"
+            $('#approve').hide(); // Menyembunyikan tombol "Undelete"
+        }
+    })
+    // Fungsi untuk menyembunyikan elemen div setelah beberapa detik
+    function hideDiv() {
+        var div = document.getElementById("myDiv"); // Ganti "myDiv" dengan ID elemen div Anda
+
+        setTimeout(function() {
+            div.style.display = "none"; // Menyembunyikan elemen div dengan mengubah properti display menjadi "none"
+        }, 5000); // Ubah 5000 menjadi jumlah milidetik (5 detik) sesuai kebutuhan Anda
     }
-    else {
-        $('#revision').hide(); // Menyembunyikan tombol "Undelete"
-        $('#approve').hide(); // Menyembunyikan tombol "Undelete"
-    }
-})
-// Fungsi untuk menyembunyikan elemen div setelah beberapa detik
-function hideDiv() {
-    var div = document.getElementById("myDiv"); // Ganti "myDiv" dengan ID elemen div Anda
 
-    setTimeout(function() {
-        div.style.display = "none"; // Menyembunyikan elemen div dengan mengubah properti display menjadi "none"
-    }, 5000); // Ubah 5000 menjadi jumlah milidetik (5 detik) sesuai kebutuhan Anda
-}
-
-// Panggil fungsi hideDiv() saat halaman pertama kali dimuat
-window.onload = hideDiv;
+    // Panggil fungsi hideDiv() saat halaman pertama kali dimuat
+    window.onload = hideDiv;
 
 </script>
 
@@ -394,7 +397,7 @@ window.onload = hideDiv;
                         icon: 'success',
                         title: 'Portofolio has been revisiond',
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 3000
                         })
                         window.location.reload()
                     }else{
@@ -402,9 +405,9 @@ window.onload = hideDiv;
                         icon: 'error',
                         title: 'Portofolio failed revisiond',
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 3000
                         })
-                        setTimeout(reload, 2000)
+                        setTimeout(reload, 3500)
                         function reload(){
                             window.location.reload()
                         }

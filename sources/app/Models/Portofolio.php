@@ -24,6 +24,17 @@ class Portofolio extends Model
     public function tindakan() {
         return $this->hasOne('App\Models\Tindakan', 'trx_id', 'trx_id');
     }
+    public function karya() {
+        return $this->hasOne('App\Models\Karyailmiah', 'trx_id', 'trx_id');
+    }
+
+    public function case_report() {
+        return $this->hasOne('App\Models\Casereport', 'trx_id', 'trx_id');
+    }
+
+    public function extrakulikuler() {
+        return $this->hasOne('App\Models\Extrakulikuler', 'trx_id', 'trx_id');
+    }
 
     public function revision() {
         return $this->hasOne('App\Models\Revision', 'trx_id', 'trx_id')->latest('id');

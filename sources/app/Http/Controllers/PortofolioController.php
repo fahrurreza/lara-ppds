@@ -39,10 +39,11 @@ class PortofolioController extends Controller
     {
         $data = [
             'supervisor'    => UserModel::where('user_level', 3)->get(),
+            'ppds'          => UserModel::where('user_level', 1)->get(),
             'trx_id'        =>  trx_id(),
             'stase'         => StaseModel::all(),
             'page'          => 'Portofolio Case Report',
-            'portofolio'    => PortofolioModel::with(['path', 'ppds', 'supervisor'])->where('portofolio_id', 2)->get()
+            'portofolio'    => PortofolioModel::with(['path', 'ppds', 'supervisor', 'case_report', 'revision'])->where('portofolio_id', 2)->get()
         ];
         return view('portofolio.casereport', compact('data'));
     }
@@ -51,10 +52,11 @@ class PortofolioController extends Controller
     {
         $data = [
             'supervisor'    => UserModel::where('user_level', 3)->get(),
+            'ppds'          => UserModel::where('user_level', 1)->get(),
             'trx_id'        => trx_id(),
             'stase'         => StaseModel::all(),
             'page'          => 'Portofolio Karya Ilmiah',
-            'portofolio'    => PortofolioModel::with(['path', 'ppds', 'supervisor'])->where('portofolio_id', 3)->get()
+            'portofolio'    => PortofolioModel::with(['path', 'ppds', 'supervisor', 'karya', 'revision'])->where('portofolio_id', 3)->get()
         ];
         return view('portofolio.karyailmiah', compact('data'));
     }
@@ -64,9 +66,10 @@ class PortofolioController extends Controller
         $data = [
             'trx_id'        => trx_id(),
             'supervisor'    => UserModel::where('user_level', 3)->get(),
+            'ppds'          => UserModel::where('user_level', 1)->get(),
             'stase'         => StaseModel::all(),
             'page'          => 'Portofolio Extrakulikuler',
-            'portofolio'    => PortofolioModel::with(['path', 'ppds', 'supervisor'])->where('portofolio_id', 4)->get()
+            'portofolio'    => PortofolioModel::with(['path', 'ppds', 'supervisor', 'extrakulikuler', 'revision'])->where('portofolio_id', 4)->get()
         ];
         return view('portofolio.extrakulikuler', compact('data'));
     }
@@ -93,8 +96,10 @@ class PortofolioController extends Controller
             PortofolioModel::where('trx_id', $request->trx_id)->update(['status' => 2]);
 
             DB::table('portofolio_revision')->insert([
-                'trx_id'    => $request->trx_id,
-                'note'      => $request->note
+                'trx_id'        => $request->trx_id,
+                'note'          => $request->note,
+                'create_date'   => now(),
+                'create_id'     => Auth::user()->id,
             ]);
 
             DB::commit();
@@ -157,5 +162,170 @@ class PortofolioController extends Controller
             return \Redirect::back();
         }
         
+    }
+
+    public function post_case_report(Request $request)
+    {
+
+        DB::beginTransaction();
+        
+        try {
+                $trx_id = trx_id();
+
+                $insert_portofolio      =   DB::table('trx_portofolio')->insert([
+                                            'portofolio_id'     => 2,
+                                            'trx_id'            => $trx_id,
+                                            'stase_id'          => $request->stase_id,
+                                            'supervisor_id'     => $request->supervisor_id,
+                                            'ppds_id'           => $request->ppds_id,
+                                            'status'            => 1,
+                                            'create_date'       => now(),
+                                            'create_id'         => Auth::user()->id
+                                            ]);
+
+                
+                $insert_case_report     =   DB::table('trx_case_report')->insert([
+                                            'trx_id'            => $trx_id,
+                                            'presenter'         => $request->presenter,
+                                            'description'       => $request->description
+                                            ]);
+
+                // PROSES FILE UPLOAD
+
+                $random = Str::random(8);
+                $file = $request->file('photo');
+                $filename = $random.'.'.$file->getClientOriginalExtension();
+                
+                $tujuan_upload = '../lara-mobile-ppds/assets/img/posting';
+                $file->move($tujuan_upload, $filename);
+
+                $insert_path            =   DB::table('path_portofolio')->insert([
+                                            'trx_id'            => $trx_id,
+                                            'path'              => $filename
+                                            ]);
+
+                DB::commit();
+
+                Toastr::success('Portofolio berhasil disimpan di nomor '. $trx_id);
+                return \Redirect::back();
+        
+        } catch (Exception $e) {
+            DB::rollback();
+            Toastr::error('Portofolio di posting, silahkan coba lagi');
+            return \Redirect::back();
+        }
+
+            
+
+    }
+
+    public function post_karya(Request $request)
+    {
+
+        DB::beginTransaction();
+        
+        try {
+                $trx_id = trx_id();
+
+                $insert_portofolio      =   DB::table('trx_portofolio')->insert([
+                                            'portofolio_id'     => 3,
+                                            'trx_id'            => $trx_id,
+                                            'stase_id'          => $request->stase_id,
+                                            'supervisor_id'     => $request->supervisor_id,
+                                            'ppds_id'           => $request->ppds_id,
+                                            'status'            => 1,
+                                            'create_date'       => now(),
+                                            'create_id'         => Auth::user()->id
+                                            ]);
+
+                
+                $insert_case_report     =   DB::table('trx_karya_ilmiah')->insert([
+                                            'trx_id'            => $trx_id,
+                                            'jenis_karya'       => $request->jenis_karya_ilmiah,
+                                            'judul'             => $request->judul,
+                                            'description'       => $request->description
+                                            ]);
+
+                // PROSES FILE UPLOAD
+
+                $random = Str::random(8);
+                $file = $request->file('file');
+                $filename = $random.'.'.$file->getClientOriginalExtension();
+                
+                $tujuan_upload = '../lara-mobile-ppds/assets/img/posting';
+                $file->move($tujuan_upload, $filename);
+
+                $insert_path            =   DB::table('path_portofolio')->insert([
+                                            'trx_id'            => $trx_id,
+                                            'path'              => $filename
+                                            ]);
+
+                DB::commit();
+
+                Toastr::success('Portofolio berhasil disimpan di nomor '. $trx_id);
+                return \Redirect::back();
+        
+        } catch (Exception $e) {
+            DB::rollback();
+            Toastr::error('Portofolio gagal di posting, silahkan coba lagi');
+            return \Redirect::back();
+        }
+
+            
+
+    }
+
+    public function post_extrakulikuler(Request $request)
+    {
+
+        DB::beginTransaction();
+        
+        try {
+                $trx_id = trx_id();
+
+                $insert_portofolio      =   DB::table('trx_portofolio')->insert([
+                                            'portofolio_id'     => 4,
+                                            'trx_id'            => $trx_id,
+                                            'stase_id'          => $request->stase_id,
+                                            'supervisor_id'     => $request->supervisor_id,
+                                            'ppds_id'           => $request->ppds_id,
+                                            'status'            => 1,
+                                            'create_date'       => now(),
+                                            'create_id'         => Auth::user()->id
+                                            ]);
+
+                
+                $insert_extrakulikuler  =   DB::table('trx_extrakulikuler')->insert([
+                                            'trx_id'            => $trx_id,
+                                            'description'       => $request->description
+                                            ]);
+
+                // PROSES FILE UPLOAD
+
+                $random = Str::random(8);
+                $file = $request->file('photo');
+                $filename = $random.'.'.$file->getClientOriginalExtension();
+                
+                $tujuan_upload = '../lara-mobile-ppds/assets/img/posting';
+                $file->move($tujuan_upload, $filename);
+
+                $insert_path            =   DB::table('path_portofolio')->insert([
+                                            'trx_id'            => $trx_id,
+                                            'path'              => $filename
+                                            ]);
+
+                DB::commit();
+
+                Toastr::success('Portofolio berhasil disimpan di nomor '. $trx_id);
+                return \Redirect::back();
+        
+        } catch (Exception $e) {
+            DB::rollback();
+            Toastr::error('Portofolio gagal di posting, silahkan coba lagi');
+            return \Redirect::back();
+        }
+
+            
+
     }
 }
