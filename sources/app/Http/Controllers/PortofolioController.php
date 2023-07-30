@@ -143,7 +143,7 @@ class PortofolioController extends Controller
                 $file = $request->file('photo');
                 $filename = $random.'.'.$file->getClientOriginalExtension();
                 
-                $tujuan_upload = '../assets/ppds_path/posting';
+                $tujuan_upload = 'assets/ppds_path/posting';
                 $file->move($tujuan_upload, $filename);
 
                 $insert_path        =   DB::table('path_portofolio')->insert([
@@ -196,7 +196,7 @@ class PortofolioController extends Controller
                 $file = $request->file('photo');
                 $filename = $random.'.'.$file->getClientOriginalExtension();
                 
-                $tujuan_upload = '../assets/ppds_path/posting';
+                $tujuan_upload = 'assets/ppds_path/posting';
                 $file->move($tujuan_upload, $filename);
 
                 $insert_path            =   DB::table('path_portofolio')->insert([
@@ -252,7 +252,7 @@ class PortofolioController extends Controller
                 $file = $request->file('file');
                 $filename = $random.'.'.$file->getClientOriginalExtension();
                 
-                $tujuan_upload = '../assets/ppds_path/posting';
+                $tujuan_upload = 'assets/ppds_path/posting';
                 $file->move($tujuan_upload, $filename);
 
                 $insert_path            =   DB::table('path_portofolio')->insert([
@@ -306,7 +306,7 @@ class PortofolioController extends Controller
                 $file = $request->file('photo');
                 $filename = $random.'.'.$file->getClientOriginalExtension();
                 
-                $tujuan_upload = '../assets/ppds_path/posting';
+                $tujuan_upload = 'assets/ppds_path/posting';
                 $file->move($tujuan_upload, $filename);
 
                 $insert_path            =   DB::table('path_portofolio')->insert([
