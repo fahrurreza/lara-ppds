@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function() {
     Route::post('post-karya', 'PortofolioController@post_karya')->name('post-karya');
     Route::post('post-extrakulikuler', 'PortofolioController@post_extrakulikuler')->name('post-extrakulikuler');
     Route::post('approve-portofolio', 'PortofolioController@approve_portofolio')->name('approve-portofolio');
+    Route::post('verified-portofolio', 'PortofolioController@verified_portofolio')->name('verified-portofolio');
     Route::post('revision-portofolio', 'PortofolioController@revision_portofolio')->name('revision-portofolio');
 
     Route::get('trx-case-report', 'PortofolioController@case_report')->name('trx-case-report');

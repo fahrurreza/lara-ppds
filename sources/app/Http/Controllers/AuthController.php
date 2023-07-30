@@ -24,14 +24,17 @@ class AuthController extends Controller
             'password'  => ['required']
         ]);
 
-        $user = UserModel::where('email', $request->email)
-                        ->where('user_level', 2)
-                        ->orwhere('user_level', 4)
-                        ->first();
+        $user = UserModel::where('email', '=', $request->email)->where('status', 1)->first();
+        
 
         if($user)
         {
-            if(Hash::check($request->password, $user->password))
+            if($user->user_level == 1)
+            {
+                Toastr::error('Maaf, Anda Tidak Memiliki akses atau akun anda belum aktif');
+                return \Redirect::back();
+            }
+            elseif(Hash::check($request->password, $user->password))
             {
                 
                 Auth::login($user);

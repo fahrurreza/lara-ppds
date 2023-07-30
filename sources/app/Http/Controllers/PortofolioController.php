@@ -88,6 +88,20 @@ class PortofolioController extends Controller
         }
     }
 
+    public function verified_portofolio(Request $request)
+    {
+        $update = PortofolioModel::where('trx_id', $request->trx_id)->update(['status' => 3]);
+
+        if($update)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public function revision_portofolio(Request $request)
     {
         

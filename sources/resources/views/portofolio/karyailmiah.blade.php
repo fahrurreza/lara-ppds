@@ -24,9 +24,11 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
+                        @if(Auth::user()->user_level == 2)
                         <h4 class="header-title" style="text-align: right;margin-right:20px;margin-top:10px;"><button
                                 type="button" class="btn btn-success" data-bs-toggle="modal"
                                 data-bs-target="#standard-modal">New Karya Ilmiah</button></h4>
+                        @endif
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="tab-pane show active" id="buttons-table-preview">
@@ -257,9 +259,13 @@
                     <textarea class="form-control"  rows="4"  name="revisi_description" id="revisi_description" ></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" id="revision" class="btn btn-warning">Revision</button>
-                <button type="button" id="approve" class="btn btn-primary">Approve</button>
-                <button type="button" class="btn btn-success" data-dismiss="modal" aria-label="Close">Close</button>
+                <button type="button" id="revision" onclick="revisi()" class="btn btn-warning">Revision</button>
+                @if(Auth::user()->user_level == 2 || Auth::user()->user_level == 4)
+                <button type="button" id="verified" onclick="verif()" class="btn btn-success">Verified</button>
+                @elseif(Auth::user()->user_level == 3)
+                <button type="button" id="approve" onclick="aprove()" class="btn btn-primary">Approve</button>
+                @endif
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Close</button>
             </div>
         </div>
         </form>
@@ -315,10 +321,12 @@
         // Mengatur visibilitas tombol "Undelete" berdasarkan status
         if (status === 1) {
             $('#revision').show(); // Menyembunyikan tombol "Undelete"
+            $('#verified').show(); // Menyembunyikan tombol "Undelete"
             $('#approve').show(); // Menyembunyikan tombol "Undelete"
         }
         else {
             $('#revision').hide(); // Menyembunyikan tombol "Undelete"
+            $('#verified').hide(); // Menyembunyikan tombol "Undelete"
             $('#approve').hide(); // Menyembunyikan tombol "Undelete"
         }
     })
@@ -337,9 +345,7 @@
 </script>
 
 <script>
-    var approve = document.getElementById("approve");
-    approve.addEventListener("click", function() {
-
+    function aprove(){
         Swal.fire({
             title: 'Kamu sudah yakin?',
             text: "Pastikan data ini sudah benar ya",
@@ -382,11 +388,54 @@
                 });
             }
         })
-    });
+    }
 
-    var revision = document.getElementById("revision");
-    revision.addEventListener("click", function() {
-          
+    function verif(){
+        Swal.fire({
+            title: 'Kamu sudah yakin?',
+            text: "Pastikan data ini sudah benar ya",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, saya yakin!'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                var trx_id = document.getElementById("trx_id_data").value
+
+                $.ajax({
+                    type : 'post',
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    url : '{{URL::to('verified-portofolio')}}',
+                    data:{'trx_id':trx_id},
+                    success:function(response){
+                        if(response == true){
+                            Swal.fire({
+                            icon: 'success',
+                            title: 'Portofolio has been verified',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                            window.location.reload()
+                        }else{
+                            Swal.fire({
+                            icon: 'error',
+                            title: 'Portofolio failed verified',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+                            setTimeout(reload, 2000)
+                            function reload(){
+                                window.location.reload()
+                            }
+                        }
+                    }
+                });
+            }
+        })
+    }
+
+    function revisi(){
         var note = document.getElementById("revisi_description").value;
 
         if(note == ''){
@@ -428,8 +477,8 @@
                 }
             });
         }
-            
-    });
+    }
+    
 </script>
 
 @endsection
