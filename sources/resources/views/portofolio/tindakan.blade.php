@@ -57,7 +57,7 @@
                                                         data-stase_name="{{$list->stase->stase_name}}"
                                                         data-user_name="{{$list->ppds->user_name}}"
                                                         data-description="{{$list->tindakan->description}}"
-                                                        data-path="http://localhost/lara-mobile-ppds/assets/img/posting/{{$list->path->path}}"
+                                                        data-path="{{asset('assets/ppds_path/posting/'.$list->path->path)}}"
                                                         data-status="{{$list->status}}"
                                                         @if($list->revision !== null)
                                                         data-revision="{{$list->revision->note}}"

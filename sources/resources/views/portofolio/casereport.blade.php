@@ -58,7 +58,7 @@
                                                         data-presenter_name="{{$list->case_report->presenter}}"
                                                         data-user_name="{{$list->ppds->user_name}}"
                                                         data-description="{{$list->case_report->description}}"
-                                                        data-path="http://localhost/lara-mobile-ppds/assets/img/posting/{{$list->path->path}}"
+                                                        data-path="{{asset('assets/ppds_path/posting/'.$list->path->path)}}"
                                                         data-status="{{$list->status}}"
                                                         @if($list->revision !== null)
                                                         data-revision="{{$list->revision->note}}"
